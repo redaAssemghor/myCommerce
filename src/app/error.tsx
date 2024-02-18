@@ -1,7 +1,5 @@
 "use client";
 
-function ErrorPage() {
-  return <div>Error accured!</div>;
+export default function ErrorPage() {
+  return <div>Something went wrong. Please refresh the page.</div>;
 }
-
-export default ErrorPage;

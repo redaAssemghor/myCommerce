@@ -4,8 +4,8 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import AddToCartButton from "./AddToCartButton";
-import { incrementProductQuantity } from "./actions";
+import AddToCartButton from "./products/[id]/AddToCartButton";
+import { incrementProductQuantity } from "./products/[id]/actions";
 
 interface ProductPageProps {
   params: {
@@ -33,22 +33,22 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({
+export default async function ProductPageimg({
   params: { id },
 }: ProductPageProps) {
   const product = await getProduct(id);
   const imageUrlArray = product.imageUrl.split(",");
 
   return (
-    <div className="flex flex-col gap-4 lg:flex-row lg:items-center relative">
-      <div className="">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+      <div>
         {imageUrlArray[1] && (
           <Image
             src={imageUrlArray[1]}
             alt={product.name}
             width={500}
             height={400}
-            className="z-10 rounded-lg max-w-36 hover:max-w-full hover:min-w-96 hover:absolute hover:top-0"
+            className="rounded-lg max-w-36 hover:w-[600px]"
           />
         )}
         {imageUrlArray[2] && (
@@ -57,7 +57,7 @@ export default async function ProductPage({
             alt={product.name}
             width={500}
             height={400}
-            className="rounded-lg max-w-36 hover:max-w-full hover:min-w-96 z-10 hover:absolute top-0"
+            className="rounded-lg max-w-36"
           />
         )}
       </div>
