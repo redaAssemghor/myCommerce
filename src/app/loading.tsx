@@ -1,3 +1,5 @@
 export default function LoadingPage() {
-  return <span className="loading loading-dots loading-lg m-auto block" />;
+  return (
+    <span className="loading loading-spinner text-primary loading-lg m-auto block" />
+  );
 }

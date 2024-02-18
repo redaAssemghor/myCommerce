@@ -41,7 +41,7 @@ export default async function ProductPage({
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-center relative">
-      <div className="">
+      <div className="flex flex-col gap-4">
         {imageUrlArray[1] && (
           <Image
             src={imageUrlArray[1]}
