@@ -1,31 +1,30 @@
-import { prisma } from "@/lib/db/prisma";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
-
 import FormSubmitButton from "@/components/FormSubmitButton";
+import { prisma } from "@/lib/db/prisma";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export const metadata: Metadata = {
-  title: "Add Product - Myshop",
+export const metadata = {
+  title: "Add Product - Flowmazon",
 };
 
 async function addProduct(formData: FormData) {
   "use server";
 
-  const name = formData.get("name")?.toString();
-  const description = formData.get("description")?.toString();
-  const price = Number(formData.get("price") || 0);
-  const [imageUrl1, imageUrl2, imageUrl3] = formData.getAll("imageUrl");
+  const session = await getServerSession(authOptions);
 
-  if (
-    !name ||
-    !description ||
-    !price ||
-    [imageUrl1, imageUrl2, imageUrl3].length === 0
-  ) {
-    throw Error("Missing required fields");
+  if (!session) {
+    redirect("/api/auth/signin?callbackUrl=/add-product");
   }
 
-  const imageUrl = [imageUrl1, imageUrl2, imageUrl3].join(",");
+  const name = formData.get("name")?.toString();
+  const description = formData.get("description")?.toString();
+  const imageUrl = formData.get("imageUrl")?.toString();
+  const price = Number(formData.get("price") || 0);
+
+  if (!name || !description || !imageUrl || !price) {
+    throw Error("Missing required fields");
+  }
 
   await prisma.product.create({
     data: { name, description, imageUrl, price },
@@ -34,7 +33,13 @@ async function addProduct(formData: FormData) {
   redirect("/");
 }
 
-export default function AddProductPage() {
+export default async function AddProductPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/api/auth/signin?callbackUrl=/add-product");
+  }
+
   return (
     <div>
       <h1 className="mb-3 text-lg font-bold">Add Product</h1>
@@ -60,29 +65,12 @@ export default function AddProductPage() {
         />
         <input
           required
-          name="imageUrl"
-          placeholder="Image URL"
-          type="url"
-          className="input-bordered input mb-3 w-full"
-        />
-        <input
-          required
-          name="imageUrl"
-          placeholder="Image URL"
-          type="url"
-          className="input-bordered input mb-3 w-full"
-        />
-        {/* Add more input fields for additional image URLs if needed */}
-        <input
-          required
           name="price"
           placeholder="Price"
           type="number"
           className="input-bordered input mb-3 w-full"
         />
-        <FormSubmitButton className="btn-primary btn-block">
-          Add Product
-        </FormSubmitButton>
+        <FormSubmitButton className="btn-block">Add Product</FormSubmitButton>
       </form>
     </div>
   );
