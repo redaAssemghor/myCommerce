@@ -6,18 +6,13 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import AddToCartButton from "./AddToCartButton";
 import { incrementProductQuantity } from "./actions";
+import { getProduct } from "./getProduct";
 
 interface ProductPageProps {
   params: {
     id: string;
   };
 }
-
-export const getProduct = cache(async (id: string) => {
-  const product = await prisma.product.findUnique({ where: { id } });
-  if (!product) notFound();
-  return product;
-});
 
 export async function generateMetadata({
   params: { id },
